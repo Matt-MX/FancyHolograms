@@ -3,6 +3,7 @@ package de.oliver.fancyholograms.commands;
 import de.oliver.fancyholograms.FancyHolograms;
 import de.oliver.fancyholograms.api.hologram.Hologram;
 import de.oliver.fancyholograms.api.data.TextHologramData;
+import de.oliver.fancyholograms.commands.hologram.DebugGetOrCreateHologram;
 import de.oliver.fancylib.MessageHelper;
 import org.bukkit.Color;
 import org.bukkit.command.Command;
@@ -31,7 +32,7 @@ public class FancyHologramsTestCMD extends Command {
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return Arrays.asList("spawn100", "test1");
+            return Arrays.asList("spawn100", "test1", "getOrCreate");
         }
 
         return Collections.emptyList();
@@ -96,6 +97,9 @@ public class FancyHologramsTestCMD extends Command {
             Hologram hologram = this.plugin.getHologramsManager().create(textData);
             hologram.createHologram();
             hologram.updateShownStateFor(p);
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("getOrCreate")) {
+            new DebugGetOrCreateHologram().run(p, null, args);
+            return true;
         }
 
         return false;

@@ -2,10 +2,13 @@ package de.oliver.fancyholograms;
 
 import com.google.common.cache.CacheBuilder;
 import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.data.BlockHologramData;
 import de.oliver.fancyholograms.api.data.HologramData;
+import de.oliver.fancyholograms.api.data.ItemHologramData;
 import de.oliver.fancyholograms.api.data.TextHologramData;
 import de.oliver.fancyholograms.api.events.HologramsLoadedEvent;
 import de.oliver.fancyholograms.api.hologram.Hologram;
+import de.oliver.fancyholograms.api.hologram.HologramType;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -18,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -74,6 +78,35 @@ public final class HologramManagerImpl implements HologramManager {
      */
     public @NotNull Optional<Hologram> getHologram(@NotNull final String name) {
         return Optional.ofNullable(this.holograms.get(name.toLowerCase(Locale.ROOT)));
+    }
+
+    /**
+     * Finds a hologram by name or creates a new one.
+     *
+     * @param name The name of the hologram to lookup.
+     * @return An optional containing the found hologram, or empty if not found.
+     */
+    public <T extends HologramData> @NotNull Hologram getOrCreateHologram(
+        @NotNull final String name,
+        @NotNull final HologramType type,
+        @NotNull final Consumer<T> callback
+    ) {
+        return getHologram(name).orElseGet(() -> {
+            HologramData data;
+            switch (type) {
+                case ITEM -> data = new ItemHologramData(name, null);
+                case BLOCK -> data = new BlockHologramData(name, null);
+                case TEXT -> data = new TextHologramData(name, null);
+                default -> throw new IllegalArgumentException("Unsupported HologramType " + type);
+            }
+
+            callback.accept((T) data);
+
+            Hologram hologram = create(data);
+            hologram.createHologram();
+
+            return hologram;
+        });
     }
 
     /**
