@@ -6,6 +6,7 @@ import de.oliver.fancyholograms.api.data.property.Visibility;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lushplugins.chatcolorhandler.ModernChatColorHandler;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Abstract base class for creating, updating, and managing holograms.
@@ -29,7 +31,6 @@ import java.util.*;
  * A Hologram object includes data about the hologram and maintains a set of players to whom the hologram is shown.
  */
 public abstract class Hologram {
-
     public static final int LINE_WIDTH = 1000;
     public static final Color TRANSPARENT = Color.fromARGB(0);
     protected static final int MINIMUM_PROTOCOL_VERSION = 762;
@@ -51,6 +52,34 @@ public abstract class Hologram {
 
     public final @NotNull HologramData getData() {
         return this.data;
+    }
+
+    @ApiStatus.Experimental
+    public final <T extends HologramData> @NotNull T getHologramData(@NotNull Class<T> clazz) {
+        return clazz.cast(this.data);
+    }
+
+    @ApiStatus.Experimental
+    public final <T extends HologramData> @Nullable T getHologramDataNullable(@NotNull Class<T> clazz) {
+        try {
+            return clazz.cast(this.data);
+        } catch (ClassCastException ignored) {
+            return null;
+        }
+    }
+
+    @ApiStatus.Experimental
+    public final void consumeData(@NotNull Consumer<HologramData> consumer) {
+        consumer.accept(getData());
+    }
+
+    @ApiStatus.Experimental
+    public final <T extends HologramData> void consumeHologramData(@NotNull Class<T> clazz, @NotNull Consumer<T> consumer) {
+        final T data = getHologramDataNullable(clazz);
+
+        if (data != null) {
+            consumer.accept(data);
+        }
     }
 
     /**
@@ -361,5 +390,10 @@ public abstract class Hologram {
     @Override
     public final int hashCode() {
         return Objects.hash(this.getData());
+    }
+
+    @ApiStatus.Experimental
+    public static <T extends HologramData> T builder(@NotNull HologramType<T> type, @NotNull String id) {
+        return (T) type.create(id, new Location(null, 0.0, 0.0, 0.0));
     }
 }

@@ -40,7 +40,7 @@ public class CreateCMD implements Subcommand {
             return false;
         }
 
-        HologramType type = HologramType.getByName(args[1]);
+        HologramType<?> type = HologramType.getByName(args[1]);
         if (type == null) {
             MessageHelper.error(player, "Could not find type: " + args[1]);
             return false;
@@ -58,26 +58,15 @@ public class CreateCMD implements Subcommand {
             return false;
         }
 
-        DisplayHologramData displayData = null;
-        switch (type) {
-            case TEXT -> displayData = new TextHologramData(name, player.getLocation());
-            case ITEM -> {
-                displayData = new ItemHologramData(name, player.getLocation());
-                displayData.setBillboard(Display.Billboard.FIXED);
-            }
-            case BLOCK -> {
-                displayData = new BlockHologramData(name, player.getLocation());
-                displayData.setBillboard(Display.Billboard.FIXED);
-            }
-        }
+        Hologram holo = Hologram.builder(type, name)
+            .setLocation(player.getLocation())
+            .setPersistent(true)
+            .create(FancyHolograms.get().getHologramsManager());
 
-        final var holo = FancyHolograms.get().getHologramsManager().create(displayData);
-        if (!new HologramCreateEvent(holo, player).callEvent()) {
-            MessageHelper.error(player, "Creating the hologram was cancelled");
-            return false;
-        }
+        hologram.consumeHologramData(DisplayHologramData.class, (data) -> {
+            data.setBillboard(Display.Billboard.CENTER);
+        });
 
-        holo.createHologram();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             holo.updateShownStateFor(onlinePlayer);
         }

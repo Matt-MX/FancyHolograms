@@ -277,7 +277,7 @@ public final class FancyHolograms extends JavaPlugin implements FancyHologramsPl
                     command.unregister(getServer().getCommandMap()));
         }
 
-        if (false) {
+        if (true) {
             FancyHologramsTestCMD fancyHologramsTestCMD = new FancyHologramsTestCMD(this);
             getServer().getCommandMap().register("fancyholograms", fancyHologramsTestCMD);
         }

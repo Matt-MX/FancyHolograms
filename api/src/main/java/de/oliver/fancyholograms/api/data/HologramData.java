@@ -1,12 +1,16 @@
 package de.oliver.fancyholograms.api.data;
 
 import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.HologramManager;
 import de.oliver.fancyholograms.api.data.property.Visibility;
+import de.oliver.fancyholograms.api.events.HologramCreateEvent;
+import de.oliver.fancyholograms.api.hologram.Hologram;
 import de.oliver.fancyholograms.api.hologram.HologramType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +39,7 @@ public class HologramData implements YamlData {
      * @param location Location of hologram
      *                 Default values are already set
      */
-    public HologramData(String name, HologramType type, Location location) {
+    public HologramData(String name, HologramType<?> type, Location location) {
         this.name = name;
         this.type = type;
         this.location = location;
@@ -45,7 +49,7 @@ public class HologramData implements YamlData {
         return name;
     }
 
-    public @NotNull HologramType getType() {
+    public @NotNull HologramType<?> getType() {
         return type;
     }
 
@@ -186,5 +190,23 @@ public class HologramData implements YamlData {
                 .setVisibility(this.getVisibility())
                 .setPersistent(this.isPersistent())
                 .setLinkedNpcName(this.getLinkedNpcName());
+    }
+
+    @ApiStatus.Experimental
+    public @NotNull Hologram getOrCreate(@NotNull HologramManager manager) {
+        final Hologram hologram = manager.getOrCreateHologram(this.name, () -> this);
+
+        manager.addHologram(hologram);
+
+        return hologram;
+    }
+
+    @ApiStatus.Experimental
+    public @NotNull Hologram create(@NotNull HologramManager manager) {
+        final Hologram hologram = manager.create(this);
+
+        manager.addHologram(hologram);
+
+        return hologram;
     }
 }

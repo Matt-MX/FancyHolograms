@@ -4,6 +4,7 @@ import de.oliver.fancyholograms.api.data.*;
 import de.oliver.fancyholograms.api.events.HologramHideEvent;
 import de.oliver.fancyholograms.api.events.HologramShowEvent;
 import de.oliver.fancyholograms.api.hologram.Hologram;
+import de.oliver.fancyholograms.api.hologram.HologramType;
 import de.oliver.fancysitula.api.entities.*;
 import de.oliver.fancysitula.factories.FancySitula;
 import org.bukkit.entity.Player;
@@ -11,7 +12,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
+
+import static de.oliver.fancyholograms.api.hologram.HologramType.*;
+
 public final class HologramImpl extends Hologram {
+    private static final Map<HologramType<?>, Supplier<FS_Display>> MAPPED_TYPES = Map.ofEntries(
+        Map.entry(TEXT, FS_TextDisplay::new),
+        Map.entry(ITEM, FS_ItemDisplay::new),
+        Map.entry(BLOCK, FS_BlockDisplay::new)
+    );
 
     private FS_Display fsDisplay;
 
@@ -31,11 +43,11 @@ public final class HologramImpl extends Hologram {
             return;
         }
 
-        switch (data.getType()) {
-            case TEXT -> this.fsDisplay = new FS_TextDisplay();
-            case ITEM -> this.fsDisplay = new FS_ItemDisplay();
-            case BLOCK -> this.fsDisplay = new FS_BlockDisplay();
-        }
+        final Supplier<FS_Display> displaySupplier = MAPPED_TYPES.get(data.getType());
+
+        Objects.requireNonNull(displaySupplier, "Unsupported hologram type!");
+
+        this.fsDisplay = displaySupplier.get();
 
         if (data instanceof DisplayHologramData dd) {
             fsDisplay.setTransformationInterpolationDuration(dd.getInterpolationDuration());

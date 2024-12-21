@@ -152,18 +152,20 @@ public class FlatFileHologramStorage implements HologramStorage {
                     continue;
                 }
 
-                HologramType type = HologramType.getByName(typeName);
+                HologramType<?> type = HologramType.getByName(typeName);
                 if (type == null) {
                     FancyHolograms.get().getFancyLogger().warn("Could not parse HologramType");
                     continue;
                 }
 
-                DisplayHologramData displayData = null;
-                switch (type) {
-                    case TEXT -> displayData = new TextHologramData(name, new Location(null, 0, 0, 0));
-                    case ITEM -> displayData = new ItemHologramData(name, new Location(null, 0, 0, 0));
-                    case BLOCK -> displayData = new BlockHologramData(name, new Location(null, 0, 0, 0));
-                }
+                DisplayHologramData displayData;
+                if (type.equals(HologramType.TEXT)) {
+                    displayData = new TextHologramData(name, new Location(null, 0, 0, 0));
+                } else if (type.equals(HologramType.ITEM)) {
+                    displayData = new ItemHologramData(name, new Location(null, 0, 0, 0));
+                } else if (type.equals(HologramType.BLOCK)) {
+                    displayData = new BlockHologramData(name, new Location(null, 0, 0, 0));
+                } else throw new UnsupportedOperationException("Unsupported hologram type!");
 
                 if (!displayData.read(holoSection, name)) {
                     FancyHolograms.get().getFancyLogger().warn("Could not read hologram data - skipping hologram");

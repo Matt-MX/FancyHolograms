@@ -134,9 +134,15 @@ public class DisplayHologramData extends HologramData {
     public boolean read(ConfigurationSection section, String name) {
         super.read(section, name);
         scale = new Vector3f(
-                (float) section.getDouble("scale_x", DEFAULT_SCALE.x),
-                (float) section.getDouble("scale_y", DEFAULT_SCALE.y),
-                (float) section.getDouble("scale_z", DEFAULT_SCALE.z)
+            (float) section.getDouble("scale_x", DEFAULT_SCALE.x),
+            (float) section.getDouble("scale_y", DEFAULT_SCALE.y),
+            (float) section.getDouble("scale_z", DEFAULT_SCALE.z)
+        );
+
+        translation = new Vector3f(
+            (float) section.getDouble("translate_x", 0.0),
+            (float) section.getDouble("translate_y", 0.0),
+            (float) section.getDouble("translate_z", 0.0)
         );
 
         shadowRadius = (float) section.getDouble("shadow_radius", DEFAULT_SHADOW_RADIUS);
@@ -153,10 +159,10 @@ public class DisplayHologramData extends HologramData {
         int blockBrightness = Math.min(15, section.getInt("block_brightness", -1));
         int skyBrightness = Math.min(15, section.getInt("sky_brightness", -1));
 
-        if(blockBrightness > -1 || skyBrightness > -1) {
+        if (blockBrightness > -1 || skyBrightness > -1) {
             brightness = new Display.Brightness(
-                    Math.max(0, blockBrightness),
-                    Math.max(0, skyBrightness)
+                Math.max(0, blockBrightness),
+                Math.max(0, skyBrightness)
             );
         }
 
@@ -169,10 +175,15 @@ public class DisplayHologramData extends HologramData {
         section.set("scale_x", scale.x);
         section.set("scale_y", scale.y);
         section.set("scale_z", scale.z);
+
+        section.set("translate_x", translation.x);
+        section.set("translate_y", translation.y);
+        section.set("translate_z", translation.z);
+
         section.set("shadow_radius", shadowRadius);
         section.set("shadow_strength", shadowStrength);
 
-        if(brightness != null) {
+        if (brightness != null) {
             section.set("block_brightness", brightness.getBlockLight());
             section.set("sky_brightness", brightness.getSkyLight());
         }
@@ -186,16 +197,16 @@ public class DisplayHologramData extends HologramData {
     public DisplayHologramData copy(String name) {
         DisplayHologramData displayHologramData = new DisplayHologramData(name, getType(), getLocation());
         displayHologramData
-                .setScale(this.getScale())
-                .setShadowRadius(this.getShadowRadius())
-                .setShadowStrength(this.getShadowStrength())
-                .setBillboard(this.getBillboard())
-                .setTranslation(this.getTranslation())
-                .setBrightness(this.getBrightness())
-                .setVisibilityDistance(this.getVisibilityDistance())
-                .setVisibility(this.getVisibility())
-                .setPersistent(this.isPersistent())
-                .setLinkedNpcName(this.getLinkedNpcName());
+            .setScale(this.getScale())
+            .setShadowRadius(this.getShadowRadius())
+            .setShadowStrength(this.getShadowStrength())
+            .setBillboard(this.getBillboard())
+            .setTranslation(this.getTranslation())
+            .setBrightness(this.getBrightness())
+            .setVisibilityDistance(this.getVisibilityDistance())
+            .setVisibility(this.getVisibility())
+            .setPersistent(this.isPersistent())
+            .setLinkedNpcName(this.getLinkedNpcName());
 
         return displayHologramData;
     }
