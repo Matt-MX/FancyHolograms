@@ -18,6 +18,7 @@ public class DisplayHologramData extends HologramData {
     public static final float DEFAULT_SHADOW_RADIUS = 0.0f;
     public static final float DEFAULT_SHADOW_STRENGTH = 1.0f;
     public static final int DEFAULT_INTERPOLATION_DURATION = 0;
+    public static final int DEFAULT_INTERPOLATION_DELAY = 0;
 
     private Display.Billboard billboard = DEFAULT_BILLBOARD;
     private Vector3f scale = new Vector3f(DEFAULT_SCALE);
@@ -26,6 +27,7 @@ public class DisplayHologramData extends HologramData {
     private float shadowRadius = DEFAULT_SHADOW_RADIUS;
     private float shadowStrength = DEFAULT_SHADOW_STRENGTH;
     private int interpolationDuration = DEFAULT_INTERPOLATION_DURATION;
+    private int interpolationDelay = DEFAULT_INTERPOLATION_DELAY;
 
     /**
      * @param name     Name of hologram
@@ -124,6 +126,16 @@ public class DisplayHologramData extends HologramData {
     public DisplayHologramData setInterpolationDuration(int interpolationDuration) {
         if (this.interpolationDuration != interpolationDuration) {
             this.interpolationDuration = interpolationDuration;
+            setHasChanges(true);
+        }
+
+        return this;
+    }
+
+    @ApiStatus.Experimental
+    public DisplayHologramData setInterpolationDelay(int interpolationDelay) {
+        if (this.interpolationDelay != interpolationDelay) {
+            this.interpolationDelay = interpolationDelay;
             setHasChanges(true);
         }
 

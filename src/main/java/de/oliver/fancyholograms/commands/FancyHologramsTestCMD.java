@@ -2,10 +2,16 @@ package de.oliver.fancyholograms.commands;
 
 import de.oliver.fancyholograms.FancyHolograms;
 import de.oliver.fancyholograms.Temp;
+import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.HologramManager;
+import de.oliver.fancyholograms.api.data.property.Visibility;
 import de.oliver.fancyholograms.api.hologram.Hologram;
 import de.oliver.fancyholograms.api.data.TextHologramData;
+import de.oliver.fancyholograms.api.hologram.HologramType;
+import de.oliver.fancyholograms.api.hologram.tasks.HologramScaleAnimation;
 import de.oliver.fancylib.MessageHelper;
 import org.bukkit.Color;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Display;
@@ -17,6 +23,7 @@ import org.joml.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class FancyHologramsTestCMD extends Command {
 
@@ -55,12 +62,12 @@ public class FancyHologramsTestCMD extends Command {
                     int n = (i * 10 + j) + 1;
                     TextHologramData textData = new TextHologramData("holo-" + n, p.getLocation().clone().add(5 * i + 1, 0, 5 * j + 1));
                     textData.setText(Arrays.asList(
-                            "<rainbow><b>This is a test hologram! (#" + n + ")</b></rainbow>",
-                            "<red>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
-                            "<green>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
-                            "<yellow>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
-                            "<gradient:red:green>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
-                            "<gradient:green:yellow>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris."
+                        "<rainbow><b>This is a test hologram! (#" + n + ")</b></rainbow>",
+                        "<red>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
+                        "<green>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
+                        "<yellow>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
+                        "<gradient:red:green>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
+                        "<gradient:green:yellow>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris."
                     ));
                     textData.setTextUpdateInterval(100)
                         .setScale(new Vector3f(.5f, .5f, .5f))
@@ -82,7 +89,7 @@ public class FancyHologramsTestCMD extends Command {
                     "<yellow>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
                     "<gradient:red:green>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris.",
                     "<gradient:green:yellow>Lorem ipsum dolor sit amet, consec tetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris."
-            ))
+                ))
                 .setTextUpdateInterval(100)
                 .setTextAlignment(TextDisplay.TextAlignment.CENTER)
                 .setBackground(Color.fromARGB(15, 78, 237, 176))
@@ -99,6 +106,23 @@ public class FancyHologramsTestCMD extends Command {
             hologram.updateShownStateFor(p);
         } else if (args.length == 1 && "test2".equalsIgnoreCase(args[0])) {
             new Temp().test(p);
+        } else if (args.length == 1 && "anim".equalsIgnoreCase(args[0])) {
+            HologramManager manager = FancyHologramsPlugin.get().getHologramManager();
+
+            Hologram holo = Hologram.builder(HologramType.BLOCK, "test-anim")
+                .setBlock(Material.DIRT)
+                .setVisibility(Visibility.MANUAL)
+                .setLocation(p.getLocation())
+                .create(manager);
+
+            FancyHologramsPlugin.get()
+                .getHologramThread()
+                .execute(() ->
+                    new HologramScaleAnimation(Set.of(p), holo, new Vector3f())
+                        .duration(20)
+                        .run()
+                );
+
         }
 
         return false;

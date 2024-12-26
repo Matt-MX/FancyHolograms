@@ -3,6 +3,8 @@ package de.oliver.fancyholograms.api.hologram;
 import de.oliver.fancyholograms.api.data.HologramData;
 import de.oliver.fancyholograms.api.data.TextHologramData;
 import de.oliver.fancyholograms.api.data.property.Visibility;
+import de.oliver.fancyholograms.api.hologram.tasks.HologramAnimationManager;
+import de.oliver.fancyholograms.api.hologram.tasks.HologramScaleAnimation;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.lushplugins.chatcolorhandler.ModernChatColorHandler;
 
 import java.util.*;
@@ -337,8 +340,12 @@ public abstract class Hologram {
         if (meetsVisibilityConditions(player)) {
             if (isWithinVisibilityDistance(player)) {
                 // Ran if the player meets the visibility conditions and is within visibility distance
-                if (!isShown) {
-                    show(player);
+                if (!isShown && !HologramAnimationManager.getInstance().isCurrentlyAnimating(player, this)) {
+//                    show(player);
+
+                    new HologramScaleAnimation(Set.of(player), this, new Vector3f())
+                        .duration(10)
+                        .run();
 
                     if (getData().getVisibility().equals(Visibility.MANUAL)) {
                         Visibility.ManualVisibility.removeDistantViewer(this, player.getUniqueId());

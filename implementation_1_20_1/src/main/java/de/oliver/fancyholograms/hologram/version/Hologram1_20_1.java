@@ -26,6 +26,7 @@ import net.minecraft.world.entity.Display.TextDisplay;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -82,7 +83,22 @@ public final class Hologram1_20_1 extends Hologram {
 
     @Override
     public void delete() {
-        this.display = null;
+        synchronized (this) {
+            if (this.display == null) {
+                return;
+            }
+
+            viewers.forEach((viewer) -> {
+                Player player = Bukkit.getPlayer(viewer);
+
+                if (player == null) return;
+
+                ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+
+                serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(this.display.getId()));
+            });
+            this.display = null;
+        }
     }
 
     @Override

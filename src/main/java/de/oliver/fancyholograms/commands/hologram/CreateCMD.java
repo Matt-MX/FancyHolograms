@@ -4,7 +4,6 @@ import de.oliver.fancyholograms.FancyHolograms;
 import de.oliver.fancyholograms.api.hologram.Hologram;
 import de.oliver.fancyholograms.api.hologram.HologramType;
 import de.oliver.fancyholograms.api.data.*;
-import de.oliver.fancyholograms.api.events.HologramCreateEvent;
 import de.oliver.fancyholograms.commands.Subcommand;
 import de.oliver.fancylib.MessageHelper;
 import org.bukkit.Bukkit;
@@ -61,9 +60,9 @@ public class CreateCMD implements Subcommand {
         Hologram holo = Hologram.builder(type, name)
             .setLocation(player.getLocation())
             .setPersistent(true)
-            .create(FancyHolograms.get().getHologramsManager());
+            .createAndAdd(FancyHolograms.get().getHologramsManager());
 
-        hologram.consumeHologramData(DisplayHologramData.class, (data) -> {
+        holo.consumeHologramData(DisplayHologramData.class, (data) -> {
             data.setBillboard(Display.Billboard.CENTER);
         });
 

@@ -3,7 +3,6 @@ package de.oliver.fancyholograms.api.data;
 import de.oliver.fancyholograms.api.FancyHologramsPlugin;
 import de.oliver.fancyholograms.api.HologramManager;
 import de.oliver.fancyholograms.api.data.property.Visibility;
-import de.oliver.fancyholograms.api.events.HologramCreateEvent;
 import de.oliver.fancyholograms.api.hologram.Hologram;
 import de.oliver.fancyholograms.api.hologram.HologramType;
 import org.bukkit.Bukkit;
@@ -202,10 +201,17 @@ public class HologramData implements YamlData {
     }
 
     @ApiStatus.Experimental
-    public @NotNull Hologram create(@NotNull HologramManager manager) {
+    public @NotNull Hologram createAndAdd(@NotNull HologramManager manager) {
         final Hologram hologram = manager.create(this);
 
         manager.addHologram(hologram);
+
+        return hologram;
+    }
+
+    @ApiStatus.Experimental
+    public @NotNull Hologram create(@NotNull HologramManager manager) {
+        final Hologram hologram = manager.create(this);
 
         return hologram;
     }
