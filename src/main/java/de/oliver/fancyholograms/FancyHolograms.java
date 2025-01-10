@@ -373,7 +373,7 @@ public final class FancyHolograms extends JavaPlugin implements FancyHologramsPl
             }
 
             return hologramsManager.getHolograms().stream()
-                    .map(h -> h.getData().getType().name())
+                    .map(h -> h.getData().getType().getIdentifier())
                     .toArray(String[]::new);
         }));
 

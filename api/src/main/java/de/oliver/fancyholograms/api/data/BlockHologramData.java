@@ -1,6 +1,7 @@
 package de.oliver.fancyholograms.api.data;
 
 import de.oliver.fancyholograms.api.hologram.HologramType;
+import de.oliver.fancyholograms.api.hologram.HologramTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,7 +20,7 @@ public class BlockHologramData extends DisplayHologramData {
      *                 Default values are already set
      */
     public BlockHologramData(String name, Location location) {
-        super(name, HologramType.BLOCK, location);
+        super(name, HologramTypes.BLOCK, location);
     }
 
     public Material getBlock() {

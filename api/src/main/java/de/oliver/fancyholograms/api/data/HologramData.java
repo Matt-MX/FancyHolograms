@@ -21,7 +21,7 @@ public class HologramData implements YamlData {
     public static final boolean DEFAULT_PERSISTENCE = true;
 
     private final String name;
-    private final HologramType type;
+    private final HologramType<?> type;
     private Location location;
     private boolean hasChanges;
     private int visibilityDistance = DEFAULT_VISIBILITY_DISTANCE;
@@ -35,7 +35,7 @@ public class HologramData implements YamlData {
      * @param location Location of hologram
      *                 Default values are already set
      */
-    public HologramData(String name, HologramType type, Location location) {
+    public HologramData(String name, HologramType<?> type, Location location) {
         this.name = name;
         this.type = type;
         this.location = location;
@@ -45,7 +45,7 @@ public class HologramData implements YamlData {
         return name;
     }
 
-    public @NotNull HologramType getType() {
+    public @NotNull HologramType<?> getType() {
         return type;
     }
 
@@ -164,7 +164,7 @@ public class HologramData implements YamlData {
 
     @Override
     public boolean write(ConfigurationSection section, String name) {
-        section.set("type", type.name());
+        section.set("type", type.identifier());
         section.set("location.world", location.getWorld().getName());
         section.set("location.x", location.x());
         section.set("location.y", location.y());

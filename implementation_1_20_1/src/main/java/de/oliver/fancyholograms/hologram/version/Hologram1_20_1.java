@@ -5,6 +5,7 @@ import de.oliver.fancyholograms.api.data.*;
 import de.oliver.fancyholograms.api.events.HologramHideEvent;
 import de.oliver.fancyholograms.api.events.HologramShowEvent;
 import de.oliver.fancyholograms.api.hologram.Hologram;
+import de.oliver.fancyholograms.api.hologram.HologramTypes;
 import de.oliver.fancylib.ReflectionUtils;
 import io.papermc.paper.adventure.PaperAdventure;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -58,11 +59,12 @@ public final class Hologram1_20_1 extends Hologram {
         }
 
         ServerLevel world = ((CraftWorld) location.getWorld()).getHandle();
+        this.display = (Display) this.data.getType().createPlatformObject(world);
 
-        switch (data.getType()) {
-            case TEXT -> this.display = new Display.TextDisplay(EntityType.TEXT_DISPLAY, world);
-            case BLOCK -> this.display = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, world);
-            case ITEM -> this.display = new Display.ItemDisplay(EntityType.ITEM_DISPLAY, world);
+        switch (data.getType().getIdentifier()) {
+            case HologramTypes.TEXT_IDENTIFIER -> this.display = new Display.TextDisplay(EntityType.TEXT_DISPLAY, world);
+            case HologramTypes.BLOCK_IDENTIFIER -> this.display = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, world);
+            case HologramTypes.ITEM_IDENTIFIER -> this.display = new Display.ItemDisplay(EntityType.ITEM_DISPLAY, world);
         }
 
         if (data instanceof DisplayHologramData dd){

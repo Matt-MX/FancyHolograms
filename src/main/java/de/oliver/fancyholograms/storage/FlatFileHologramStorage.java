@@ -2,10 +2,7 @@ package de.oliver.fancyholograms.storage;
 
 import de.oliver.fancyholograms.FancyHolograms;
 import de.oliver.fancyholograms.api.HologramStorage;
-import de.oliver.fancyholograms.api.data.BlockHologramData;
-import de.oliver.fancyholograms.api.data.DisplayHologramData;
-import de.oliver.fancyholograms.api.data.ItemHologramData;
-import de.oliver.fancyholograms.api.data.TextHologramData;
+import de.oliver.fancyholograms.api.data.*;
 import de.oliver.fancyholograms.api.hologram.Hologram;
 import de.oliver.fancyholograms.api.hologram.HologramType;
 import org.bukkit.Location;
@@ -152,18 +149,13 @@ public class FlatFileHologramStorage implements HologramStorage {
                     continue;
                 }
 
-                HologramType type = HologramType.getByName(typeName);
+                HologramType<?> type = HologramType.getByName(typeName);
                 if (type == null) {
                     FancyHolograms.get().getFancyLogger().warn("Could not parse HologramType");
                     continue;
                 }
 
-                DisplayHologramData displayData = null;
-                switch (type) {
-                    case TEXT -> displayData = new TextHologramData(name, new Location(null, 0, 0, 0));
-                    case ITEM -> displayData = new ItemHologramData(name, new Location(null, 0, 0, 0));
-                    case BLOCK -> displayData = new BlockHologramData(name, new Location(null, 0, 0, 0));
-                }
+                HologramData displayData = type.createData(name, null);
 
                 if (!displayData.read(holoSection, name)) {
                     FancyHolograms.get().getFancyLogger().warn("Could not read hologram data - skipping hologram");

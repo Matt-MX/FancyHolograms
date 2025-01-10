@@ -157,7 +157,7 @@ public final class HologramCMD extends Command {
             final var usingNpcs = PluginUtils.isFancyNpcsEnabled();
 
             List<String> suggestions = new ArrayList<>(Arrays.asList("position", "moveHere", "center", "moveTo", "rotate", "rotatepitch", "billboard", "scale", "translate", "visibilityDistance", "visibility", "shadowRadius", "shadowStrength", "brightness", usingNpcs ? "linkWithNpc" : "", usingNpcs ? "unlinkWithNpc" : ""));
-            suggestions.addAll(type.getCommands());
+            suggestions.addAll(type.commands());
 
             return suggestions.stream().filter(input -> input.toLowerCase().startsWith(args[2].toLowerCase(Locale.ROOT))).toList();
         }

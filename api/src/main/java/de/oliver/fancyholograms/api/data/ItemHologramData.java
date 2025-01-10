@@ -1,6 +1,7 @@
 package de.oliver.fancyholograms.api.data;
 
 import de.oliver.fancyholograms.api.hologram.HologramType;
+import de.oliver.fancyholograms.api.hologram.HologramTypes;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,7 +21,7 @@ public class ItemHologramData extends DisplayHologramData {
      *                 Default values are already set
      */
     public ItemHologramData(String name, Location location) {
-        super(name, HologramType.ITEM, location);
+        super(name, HologramTypes.ITEM, location);
     }
 
     public ItemStack getItemStack() {

@@ -5,6 +5,7 @@ import de.oliver.fancyholograms.api.data.*;
 import de.oliver.fancyholograms.api.events.HologramHideEvent;
 import de.oliver.fancyholograms.api.events.HologramShowEvent;
 import de.oliver.fancyholograms.api.hologram.Hologram;
+import de.oliver.fancyholograms.api.hologram.HologramTypes;
 import de.oliver.fancylib.ReflectionUtils;
 import io.papermc.paper.adventure.PaperAdventure;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -58,12 +59,7 @@ public final class Hologram1_19_4 extends Hologram {
         }
 
         ServerLevel world = ((CraftWorld) location.getWorld()).getHandle();
-
-        switch (data.getType()) {
-            case TEXT -> this.display = new Display.TextDisplay(EntityType.TEXT_DISPLAY, world);
-            case BLOCK -> this.display = new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, world);
-            case ITEM -> this.display = new Display.ItemDisplay(EntityType.ITEM_DISPLAY, world);
-        }
+        this.display = (Display) this.data.getType().createPlatformObject(world);
 
         if (data instanceof DisplayHologramData dd) {
             final var DATA_INTERPOLATION_DURATION_ID = ReflectionUtils.getStaticValue(Display.class, MappingKeys1_19_4.DATA_INTERPOLATION_DURATION_ID.getMapping());
@@ -167,10 +163,10 @@ public final class Hologram1_19_4 extends Hologram {
 
             // entity scale AND MORE!
             display.setTransformation(new Transformation(
-                    displayData.getTranslation(),
-                    new Quaternionf(),
-                    displayData.getScale(),
-                    new Quaternionf())
+                displayData.getTranslation(),
+                new Quaternionf(),
+                displayData.getScale(),
+                new Quaternionf())
             );
 
             // entity shadow

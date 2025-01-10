@@ -2,6 +2,7 @@ package de.oliver.fancyholograms.api.data;
 
 import de.oliver.fancyholograms.api.hologram.Hologram;
 import de.oliver.fancyholograms.api.hologram.HologramType;
+import de.oliver.fancyholograms.api.hologram.HologramTypes;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -33,7 +34,7 @@ public class TextHologramData extends DisplayHologramData {
      *                 Default values are already set
      */
     public TextHologramData(String name, Location location) {
-        super(name, HologramType.TEXT, location);
+        super(name, HologramTypes.TEXT, location);
         text = new ArrayList<>(List.of("Edit this line with /hologram edit " + name));
     }
 

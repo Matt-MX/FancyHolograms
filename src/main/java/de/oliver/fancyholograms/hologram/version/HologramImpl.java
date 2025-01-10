@@ -4,6 +4,7 @@ import de.oliver.fancyholograms.api.data.*;
 import de.oliver.fancyholograms.api.events.HologramHideEvent;
 import de.oliver.fancyholograms.api.events.HologramShowEvent;
 import de.oliver.fancyholograms.api.hologram.Hologram;
+import de.oliver.fancyholograms.api.hologram.HologramTypes;
 import de.oliver.fancysitula.api.entities.*;
 import de.oliver.fancysitula.factories.FancySitula;
 import org.bukkit.entity.Player;
@@ -31,10 +32,11 @@ public final class HologramImpl extends Hologram {
             return;
         }
 
-        switch (data.getType()) {
-            case TEXT -> this.fsDisplay = new FS_TextDisplay();
-            case ITEM -> this.fsDisplay = new FS_ItemDisplay();
-            case BLOCK -> this.fsDisplay = new FS_BlockDisplay();
+        // TODO(Anyone): This isn't really extensible.
+        switch (data.getType().getIdentifier()) {
+            case HologramTypes.TEXT_IDENTIFIER -> this.fsDisplay = new FS_TextDisplay();
+            case HologramTypes.ITEM_IDENTIFIER -> this.fsDisplay = new FS_ItemDisplay();
+            case HologramTypes.BLOCK_IDENTIFIER -> this.fsDisplay = new FS_BlockDisplay();
         }
 
         if (data instanceof DisplayHologramData dd) {
